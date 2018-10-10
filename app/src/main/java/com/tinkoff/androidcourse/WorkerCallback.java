@@ -3,37 +3,43 @@ package com.tinkoff.androidcourse;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.support.v7.widget.helper.ItemTouchHelper.Callback;
 
-public class WorkerCallback extends ItemTouchHelper.Callback {
+import com.tinkoff.androidcourse.Adapters.WorkerAdapter;
 
-    private int mDefaultSwipeDirs;
-    private int mDefaultDragDirs;
+public class WorkerCallback extends Callback {
+    private final WorkerAdapter workerAdapter;
 
-    public WorkerCallback(int dragDirs, int swipeDirs) {
-        this.mDefaultSwipeDirs = swipeDirs;
-        this.mDefaultDragDirs = dragDirs;
+    public WorkerCallback(WorkerAdapter workerAdapter) {
+        this.workerAdapter = workerAdapter;
     }
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        return makeMovementFlags(this.getDragDirs(recyclerView, viewHolder), this.getSwipeDirs(recyclerView, viewHolder));
+        int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+        return makeMovementFlags(dragFlags, swipeFlags);
+    }
+
+    @Override
+    public boolean isItemViewSwipeEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean isLongPressDragEnabled() {
+        return true;
     }
 
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-        return false;
+        workerAdapter.onItemMove(viewHolder.getAdapterPosition(),
+                viewHolder1.getAdapterPosition());
+        return true;
     }
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-
-    }
-
-    public int getDragDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        return this.mDefaultDragDirs;
-    }
-
-    public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        return this.mDefaultSwipeDirs;
+        workerAdapter.onItemDismiss(viewHolder.getAdapterPosition());
     }
 }

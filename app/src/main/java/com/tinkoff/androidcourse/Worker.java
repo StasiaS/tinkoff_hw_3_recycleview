@@ -47,4 +47,5 @@ public class Worker {
     public void setPosition(String position) {
         this.position = position;
     }
+
 }

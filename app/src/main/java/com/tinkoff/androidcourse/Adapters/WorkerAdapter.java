@@ -2,6 +2,7 @@ package com.tinkoff.androidcourse.Adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,11 @@ import android.widget.TextView;
 
 import com.tinkoff.androidcourse.R;
 import com.tinkoff.androidcourse.Worker;
+import com.tinkoff.androidcourse.WorkerCallback;
 
 import java.util.ArrayList;
 
-public class WorkerAdapter extends RecyclerView.Adapter<WorkerAdapter.ViewHolder> {
+public class WorkerAdapter extends RecyclerView.Adapter<WorkerAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
     private ArrayList<Worker> workerArrayList;
 
@@ -70,6 +72,20 @@ public class WorkerAdapter extends RecyclerView.Adapter<WorkerAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return workerArrayList.size();
+    }
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        Worker worker = workerArrayList.get(fromPosition);
+        workerArrayList.remove(fromPosition);
+        workerArrayList.add(fromPosition, worker);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        workerArrayList.remove(position);
+        notifyItemRemoved(position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
